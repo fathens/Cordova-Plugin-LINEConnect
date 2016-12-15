@@ -20,7 +20,7 @@ def accessors(clazz)
 end
 
 class Pod
-    attr_accessor :name, :version, :path, :git, :branch, :tag, :commit
+    attr_accessor :name, :version, :path, :git, :branch, :tag, :commit, :podspec, :subspecs
 
     def initialize(params = {})
         e = params[:element]
@@ -44,7 +44,9 @@ class Pod
             or_nil(:git),
             or_nil(:branch),
             or_nil(:tag),
-            or_nil(:commit)
+            or_nil(:commit),
+            or_nil(:podspec),
+            @subspecs ? ":subspecs => [#{@subspecs.split(',').map {|x| "'#{x.strip}'"}.join(', ')}]" : nil
         ]
         log "Pod #{args}"
         "pod " + args.select { |a| a != nil }.join(', ')
