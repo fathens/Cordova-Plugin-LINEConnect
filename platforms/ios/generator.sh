@@ -3,6 +3,7 @@
 cd "$(dirname $0)"
 
 title="CordovaPlugin_$(basename "$(cd ../../; pwd)")"
+SWIFT_VERSION="$(cat .swift-version)"
 
 echo "################################"
 echo "#### Generate Xcodeproject"
@@ -35,6 +36,7 @@ sources = Dir.glob("src/*.swift").map { |path| group.new_file(path) }
 target.add_file_references(sources)
 
 build_settings(project,
+  "SWIFT_VERSION" => "$SWIFT_VERSION",
   "ENABLE_BITCODE" => "NO"
 )
 
@@ -46,6 +48,7 @@ echo "#### pod install"
 
 cat <<EOF > Podfile
 platform :ios, "9.0"
+swift_version = "$SWIFT_VERSION"
 use_frameworks!
 
 target '$title' do
