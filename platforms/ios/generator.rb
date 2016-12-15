@@ -11,11 +11,23 @@ def log_header(msg)
     log "#### #{msg}"
 end
 
+def accessors(clazz)
+    keys = clazz.instance_methods
+    names = keys.map { |key| key.to_s }
+    keys.select { |key|
+        key.to_s.match(/^\w+$/) && names.include?("#{key}=")
+    }
+end
+
 class Pod
     attr_accessor :name, :version, :path, :git, :branch, :tag, :commit
 
-    def initialize params = {}
-        params.each { |key, value| send "#{key}=", value }
+    def initialize(params = {})
+        e = params[:element]
+        accessors(Pod).each { |key|
+            value = params[key] || (e ? e.attributes[key.to_s] : nil)
+            send "#{key}=", value
+        }
     end
 
     def or_nil(key, with_prefix = true)
@@ -49,12 +61,7 @@ class Podfile
         @ios_version = element.attributes['ios_version'] || '10.0'
         @swift_version = element.attributes['swift_version'] || '3.0'
         @pods = element.get_elements('pod').map { |e|
-            Pod.new(
-                name: e.attributes['name'],
-                version: e.attributes['version'],
-                git: e.attributes['git'],
-                path: e.attributes['path']
-            )
+            Pod.new(element: e)
         }
     end
 
