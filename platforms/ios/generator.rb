@@ -2,6 +2,7 @@ require 'pathname'
 require 'rexml/document'
 require 'xcodeproj'
 require 'shellwords'
+require 'fileutils'
 
 def log(msg)
     puts msg
@@ -172,10 +173,14 @@ class XcodeProject
     end
 end
 
-def git_clone(url, username, password, dir)
+def git_clone(url, tag, username, password, dir)
+    FileUtils.rm_rf(dir) if dir.exist?
     cred = [username, password].map {|s| s.shellescape }.join(':')
     target_url = url.sub(/^https:\/\//, "https://#{cred}@")
     system "git clone #{target_url} #{dir}"
+    Dir.chdir(dir) {
+        system "git checkout #{tag}"
+    }
 end
 
 $PLATFORM_DIR = Pathname($0).realpath.dirname
@@ -201,7 +206,7 @@ proj.build_settings = {
     "ENABLE_BITCODE" => "NO"
 }
 
-git_clone("https://bitbucket.org/sawatani/lineadapter_ios.git", ENV['BITBUCKET_USERNAME'], ENV['BITBUCKET_PASSWORD'], $PROJECT_DIR/'.tmp'/'LineAdapter-iOS')
+git_clone("https://bitbucket.org/fathens/lineadapter_ios.git", "version/3.2.1", ENV['BITBUCKET_USERNAME'], ENV['BITBUCKET_PASSWORD'], $PROJECT_DIR/'.tmp'/'LineAdapter-iOS')
 target_name = proj.write("CordovaPlugin_#{$PROJECT_DIR.basename}")
 podfile.write(target_name)
 
