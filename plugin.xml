@@ -53,7 +53,10 @@
             </array>
         </config-file>
 
-        <podfile swift_version="3.0">
+        <podfile ios_version="9.0" swift_version="3.0">
+            <pod name="LineAdapter" podspec="~/devel/workspace/Cordova-Plugin/LineAdapter/LineAdapter.podspec">
+                <bridging-header import="LineAdapter/LineSDK.h" />
+            </pod>
         </podfile>
 
         <source-file src="platforms/ios/src/LINEConnect.swift"/>
