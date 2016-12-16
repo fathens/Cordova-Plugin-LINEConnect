@@ -136,20 +136,20 @@ end
 class XcodeProject
     attr_accessor :build_settings, :sources_pattern
 
-    def initialize(title)
-        @title = title
-        @project = Xcodeproj::Project.new "#{@title}.xcodeproj"
-        @target = @project.new_target(:framework, @title, :ios)
-        @project.recreate_user_schemes
+    def initialize
         @build_settings = {}
         @sources_pattern = "*.swift"
     end
 
-    def write
-        log_header "Write #{@title}.xcodeproj"
+    def write(project_name)
+        log_header "Write #{project_name}.xcodeproj"
 
-        @project.targets.each do |target|
-            group = @project.new_group "Sources"
+        project = Xcodeproj::Project.new "#{project_name}.xcodeproj"
+        target = project.new_target(:framework, project_name, :ios)
+        project.recreate_user_schemes
+
+        project.targets.each do |target|
+            group = project.new_group "Sources"
             sources = Dir.glob(@sources_pattern).map { |path|
                 log "Adding source to #{target.name}: #{path}"
                 group.new_file(path)
@@ -164,13 +164,13 @@ class XcodeProject
             end
         end
 
-        @project.save
+        project.save
+        return project_name
     end
 end
 
 $PLATFORM_DIR = Pathname($0).realpath.dirname
 $PROJECT_DIR = $PLATFORM_DIR.dirname.dirname
-$TITLE = "CordovaPlugin_#{$PROJECT_DIR.basename}"
 
 plugin_xml = REXML::Document.new(File.open($PROJECT_DIR/'plugin.xml'))
 
@@ -182,7 +182,7 @@ podfile.ios_version ||= '10.0'
 bridge = BridgingHeaderFile.new(podfile.pods.map {|p| p.bridging_headers }.flatten)
 bridge_file = bridge.write($PLATFORM_DIR/".Bridging-Header.h")
 
-proj = XcodeProject.new($TITLE)
+proj = XcodeProject.new
 proj.sources_pattern = "src/*.swift"
 proj.build_settings = {
     "SWIFT_OBJC_BRIDGING_HEADER" => bridge_file ? bridge_file.relative_path_from($PLATFORM_DIR) : nil,
@@ -190,8 +190,8 @@ proj.build_settings = {
     "ENABLE_BITCODE" => "NO"
 }
 
-proj.write
-podfile.write($TITLE)
+target_name = proj.write("CordovaPlugin_#{$PROJECT_DIR.basename}")
+podfile.write(target_name)
 
 log_header "pod install"
 system "pod install"
