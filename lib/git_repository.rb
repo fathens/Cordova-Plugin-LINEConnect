@@ -9,6 +9,13 @@ module GitRepository
         )
     end
 
+    def self.clone_lineadapter_android(target_dir)
+        clone_bitbucket("fathens", "lineadapter_android",
+            target_dir,
+            "version/3.1.21"
+        )
+    end
+
     def self.clone_bitbucket(owner, name, dir, tag)
         git_clone("https://bitbucket.org/#{owner}/#{name}.git", dir, tag: tag,
             username: ENV['BITBUCKET_USERNAME'],
