@@ -1,6 +1,7 @@
 require 'pathname'
 require 'fileutils'
 require_relative '../../lib/git_repository'
+require_relative '../../lib/gradle'
 
 def log(msg)
     puts msg
@@ -62,8 +63,16 @@ def write_build_gradle
     }
 end
 
-download_cordova_src($PLATFORM_DIR/'.cordova')
+def write_plugin_gradle
+    dir = $PLATFORM_DIR/'.lib'
+    GitRepository.clone_lineadapter_android(dir)
+    gradle = GradleFile.new($PLATFORM_DIR, dir)
+    gradle.write('plugin.gradle')
+end
+
 write_build_gradle
+write_plugin_gradle
+download_cordova_src($PLATFORM_DIR/'.cordova')
 
 log "Generating project done"
 log "Open by AndroidStudio. Thank you."
