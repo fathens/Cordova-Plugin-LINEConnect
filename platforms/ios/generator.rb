@@ -35,7 +35,7 @@ proj.build_settings = {
     "ENABLE_BITCODE" => "NO"
 }
 
-GitRepository.clone_lineadapter_ios($PROJECT_DIR)
+GitRepository.clone_lineadapter_ios($PROJECT_DIR, '3.2.1')
 target_name = proj.write("CordovaPlugin_#{$PROJECT_DIR.basename}")
 podfile.write(target_name)
 

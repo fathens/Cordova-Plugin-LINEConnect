@@ -64,7 +64,7 @@ def write_build_gradle
 end
 
 def write_plugin_gradle
-    repo_dir = GitRepository.clone_lineadapter_android($PLATFORM_DIR/'.lib')
+    repo_dir = GitRepository.clone_lineadapter_android($PLATFORM_DIR/'.lib', '3.1.21')
 
     gradle = PluginGradle.new($PLATFORM_DIR)
     gradle.jar_files = Pathname.glob(repo_dir/'*.jar')
