@@ -1,7 +1,7 @@
 require 'pathname'
-require_relative 'lib/git_repository'
-require_relative 'lib/xcode_project'
-require_relative 'lib/podfile'
+require_relative '../../lib/git_repository'
+require_relative '../../lib/xcode_project'
+require_relative '../../lib/podfile'
 
 def log(msg)
     puts msg
