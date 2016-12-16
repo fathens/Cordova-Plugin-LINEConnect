@@ -13,6 +13,8 @@
         <clobbers target="plugin.LINEConnect"/>
     </js-module>
 
+    <preference name="CHANNEL_ID" />
+
     <platform name="android">
         <dependency id="org.fathens.cordova.plugin.lang.Kotlin" url="https://github.com/fathens/Cordova-Plugin-Kotlin.git" commit="master" />
 
@@ -24,7 +26,37 @@
     <platform name="ios">
         <dependency id="org.fathens.cordova.plugin.lang.Swift" url="https://github.com/fathens/Cordova-Plugin-Swift.git" commit="master" />
 
-        <podfile swift_version="3.0">
+        <preference name="BUNDLE_ID" />
+
+        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+            <array>
+                <dict>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>line3rdp.$BUNDLE_ID</string>
+                    </array>
+                </dict>
+            </array>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="LineAdapterConfig">
+            <dict>
+                <key>ChannelId</key>
+                <string>$CHANNEL_ID</string>
+            </dict>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
+            <array>
+                <string>lineauth</string>
+                <string>line3rdp.$BUNDLE_ID</string>
+            </array>
+        </config-file>
+
+        <podfile ios_version="9.0" swift_version="3.0">
+            <pod name="LineAdapter" path="${PLUGIN_DIR}/.tmp/LineAdapter-iOS">
+                <bridging-header import="LineAdapter/LineSDK.h" />
+            </pod>
         </podfile>
 
         <source-file src="platforms/ios/src/LINEConnect.swift"/>
