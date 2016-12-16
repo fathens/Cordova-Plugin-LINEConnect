@@ -171,6 +171,8 @@ plugin_xml = REXML::Document.new(File.open($PROJECT_DIR/'plugin.xml'))
 
 podfile = Podfile.new(element: plugin_xml.get_elements('//platform[@name="ios"]/podfile').first)
 podfile.pods.unshift(Pod.new(name: 'Cordova'))
+podfile.swift_version ||= '3.0'
+podfile.ios_version ||= '10.0'
 
 bridge_file = $PLATFORM_DIR/".Bridging-Header.h"
 bridge = BridgingHeaderFile.new(podfile.pods.map {|p| p.bridging_headers }.flatten)
