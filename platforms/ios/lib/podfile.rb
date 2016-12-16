@@ -1,5 +1,4 @@
 require 'rexml/document'
-require 'shellwords'
 
 class ElementStruct
     def self.accessors(clazz)

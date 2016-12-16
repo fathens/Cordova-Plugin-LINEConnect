@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'shellwords'
 
 module GitRepository
     def self.clone_lineadapter(plugin_dir)
