@@ -116,15 +116,20 @@ end
 
 class BridgingHeaderFile
     def initialize(all)
-        @headers = all.uniq { |x| x.import }
+        @imports = all.map { |x| x.import }.compact.uniq
     end
 
     def write(file)
-        File.open(file, "w") { |dst|
-            dst.puts @headers.map { |header|
-                "#import <#{header.import}>"
+        if @imports.empty?
+            return nil
+        else
+            File.open(file, "w") { |dst|
+                dst.puts @imports.map { |x|
+                    "#import <#{x}>"
+                }
             }
-        }
+            return file
+        end
     end
 end
 
@@ -174,14 +179,13 @@ podfile.pods.unshift(Pod.new(name: 'Cordova'))
 podfile.swift_version ||= '3.0'
 podfile.ios_version ||= '10.0'
 
-bridge_file = $PLATFORM_DIR/".Bridging-Header.h"
 bridge = BridgingHeaderFile.new(podfile.pods.map {|p| p.bridging_headers }.flatten)
-bridge.write(bridge_file)
+bridge_file = bridge.write($PLATFORM_DIR/".Bridging-Header.h")
 
 proj = XcodeProject.new($TITLE)
 proj.sources_pattern = "src/*.swift"
 proj.build_settings = {
-    "SWIFT_OBJC_BRIDGING_HEADER" => bridge_file.relative_path_from($PLATFORM_DIR),
+    "SWIFT_OBJC_BRIDGING_HEADER" => bridge_file ? bridge_file.relative_path_from($PLATFORM_DIR) : nil,
     "SWIFT_VERSION" => podfile.swift_version,
     "ENABLE_BITCODE" => "NO"
 }
