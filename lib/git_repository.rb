@@ -2,11 +2,15 @@ require 'fileutils'
 require 'shellwords'
 
 module GitRepository
-    def self.clone_lineadapter(plugin_dir)
-        git_clone(
-            "https://bitbucket.org/fathens/lineadapter_ios.git",
+    def self.clone_lineadapter_ios(plugin_dir)
+        clone_bitbucket("fathens", "lineadapter_ios",
             plugin_dir/'.tmp'/'LineAdapter-iOS',
-            tag: "version/3.2.1",
+            "version/3.2.1"
+        )
+    end
+
+    def self.clone_bitbucket(owner, name, dir, tag)
+        git_clone("https://bitbucket.org/#{owner}/#{name}.git", dir, tag: tag,
             username: ENV['BITBUCKET_USERNAME'],
             password: ENV['BITBUCKET_PASSWORD']
         )
