@@ -1,13 +1,13 @@
 require 'fileutils'
 
 module GitRepository
-    def self.clone_lineadapter(dir)
+    def self.clone_lineadapter(plugin_dir)
         git_clone(
             "https://bitbucket.org/fathens/lineadapter_ios.git",
             "version/3.2.1",
             ENV['BITBUCKET_USERNAME'],
             ENV['BITBUCKET_PASSWORD'],
-            dir
+            plugin_dir/'.tmp'/'LineAdapter-iOS'
         )
     end
 
