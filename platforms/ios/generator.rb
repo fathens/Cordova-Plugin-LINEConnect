@@ -71,7 +71,9 @@ class Pod < ElementStruct
             @subspecs ? ":subspecs => [#{@subspecs.split(',').map {|x| "'#{x.strip}'"}.join(', ')}]" : nil
         ]
         log "Pod #{args}"
-        "pod " + args.compact.join(', ')
+        "pod " + args.compact.join(', ').gsub(/\$\{(.+?)\}/) {
+            ENV[$1] || $1
+        }
     end
 
     private
@@ -171,6 +173,8 @@ end
 
 $PLATFORM_DIR = Pathname($0).realpath.dirname
 $PROJECT_DIR = $PLATFORM_DIR.dirname.dirname
+
+ENV['PLUGIN_DIR'] = $PROJECT_DIR.to_s
 
 plugin_xml = REXML::Document.new(File.open($PROJECT_DIR/'plugin.xml'))
 
