@@ -1,7 +1,7 @@
 require 'pathname'
 require 'fileutils'
 require_relative '../../lib/git_repository'
-require_relative '../../lib/gradle'
+require_relative '../../lib/plugin_gradle'
 
 def log(msg)
     puts msg
@@ -64,9 +64,11 @@ def write_build_gradle
 end
 
 def write_plugin_gradle
-    dir = $PLATFORM_DIR/'.lib'
-    GitRepository.clone_lineadapter_android(dir)
-    gradle = GradleFile.new($PLATFORM_DIR, dir)
+    repo_dir = GitRepository.clone_lineadapter_android($PLATFORM_DIR/'.lib')
+
+    gradle = PluginGradle.new($PLATFORM_DIR)
+    gradle.jar_files = Pathname.glob(repo_dir/'*.jar')
+    gradle.jni_dir = repo_dir/'libs'
     gradle.write('plugin.gradle')
 end
 

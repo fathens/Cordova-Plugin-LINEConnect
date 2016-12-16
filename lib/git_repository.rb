@@ -29,5 +29,6 @@ module GitRepository
         target_url = cred.empty? ? url : url.sub(/^https:\/\//, "https://#{cred}@")
         target_url = "-b #{tag} #{target_url}" if tag
         system "git clone #{target_url} #{dir}"
+        return dir
     end
 end
