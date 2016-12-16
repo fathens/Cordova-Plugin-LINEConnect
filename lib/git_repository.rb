@@ -3,21 +3,21 @@ require 'shellwords'
 
 module GitRepository
     def self.clone_lineadapter_ios(plugin_dir)
-        clone_bitbucket("fathens", "lineadapter_ios",
+        clone_bitbucket("lineadapter_ios",
             plugin_dir/'.tmp'/'LineAdapter-iOS',
             "version/3.2.1"
         )
     end
 
     def self.clone_lineadapter_android(target_dir)
-        clone_bitbucket("fathens", "lineadapter_android",
+        clone_bitbucket("lineadapter_android",
             target_dir,
             "version/3.1.21"
         )
     end
 
     def self.clone_bitbucket(owner, name, dir, tag)
-        git_clone("https://bitbucket.org/#{owner}/#{name}.git", dir, tag: tag,
+        git_clone("https://bitbucket.org/fathens/#{name}.git", dir, tag: tag,
             username: ENV['BITBUCKET_USERNAME'],
             password: ENV['BITBUCKET_PASSWORD']
         )
