@@ -24,7 +24,7 @@ def download_cordova_src(target_dir)
 end
 
 def write_build_gradle
-    File.open('bundle.gradle', 'w') { |dst|
+    File.open('build.gradle', 'w') { |dst|
         dst.puts <<~EOF
         buildscript {
             repositories {
