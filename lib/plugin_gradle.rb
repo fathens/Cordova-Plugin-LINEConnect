@@ -3,8 +3,8 @@ require 'pathname'
 class PluginGradle
     attr_accessor :base_dir, :jar_files, :jni_dir
 
-    def initialize(platform_dir, repo_dir)
-        @base_dir = platform_dir
+    def initialize(base_dir)
+        @base_dir = base_dir
     end
 
     def write(target_file)

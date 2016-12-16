@@ -16,7 +16,7 @@ module GitRepository
         )
     end
 
-    def self.clone_bitbucket(owner, name, dir, tag)
+    def self.clone_bitbucket(name, dir, tag)
         git_clone("https://bitbucket.org/fathens/#{name}.git", dir, tag: tag,
             username: ENV['BITBUCKET_USERNAME'],
             password: ENV['BITBUCKET_PASSWORD']
