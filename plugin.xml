@@ -54,7 +54,7 @@
         </config-file>
 
         <podfile ios_version="9.0" swift_version="3.0">
-            <pod name="LineAdapter" podspec="~/devel/workspace/Cordova-Plugin/LineAdapter/LineAdapter.podspec">
+            <pod name="LineAdapter" path="${PLUGIN_DIR}/.tmp/LineAdapter-iOS">
                 <bridging-header import="LineAdapter/LineSDK.h" />
             </pod>
         </podfile>
