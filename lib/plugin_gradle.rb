@@ -19,7 +19,7 @@ class PluginGradle
             }
             android {
                 sourceSets {
-                    main.jni.srcDirs += '#{mk_path(@jni_dir)}'
+                    main.jniLibs.srcDirs += '#{mk_path(@jni_dir)}'
                 }
             }
             EOF
