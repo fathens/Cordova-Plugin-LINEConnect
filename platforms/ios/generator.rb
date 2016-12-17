@@ -13,11 +13,11 @@ def log_header(msg)
 end
 
 $PLATFORM_DIR = Pathname($0).realpath.dirname
-$PROJECT_DIR = $PLATFORM_DIR.dirname.dirname
+$PLUGIN_DIR = $PLATFORM_DIR.dirname.dirname
 
-ENV['PLUGIN_DIR'] = $PROJECT_DIR.to_s
+ENV['PLUGIN_DIR'] = $PLUGIN_DIR.to_s
 
-plugin_xml = REXML::Document.new(File.open($PROJECT_DIR/'plugin.xml'))
+plugin_xml = REXML::Document.new(File.open($PLUGIN_DIR/'plugin.xml'))
 
 podfile = Podfile.new(element: plugin_xml.get_elements('//platform[@name="ios"]/podfile').first)
 podfile.pods.unshift(Pod.new(name: 'Cordova'))
@@ -35,8 +35,8 @@ proj.build_settings = {
     "ENABLE_BITCODE" => "NO"
 }
 
-GitRepository.lineadapter_ios($PROJECT_DIR, '3.2.1').git_clone
-target_name = proj.write("CordovaPlugin_#{$PROJECT_DIR.basename}")
+GitRepository.lineadapter_ios($PLUGIN_DIR, '3.2.1').git_clone
+target_name = proj.write("CordovaPlugin_#{$PLUGIN_DIR.basename}")
 podfile.write(target_name)
 
 log_header "pod install"

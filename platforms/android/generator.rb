@@ -13,14 +13,9 @@ def log_header(msg)
 end
 
 $PLATFORM_DIR = Pathname($0).realpath.dirname
-$PROJECT_DIR = $PLATFORM_DIR.dirname.dirname
+$PLUGIN_DIR = $PLATFORM_DIR.dirname.dirname
 
-ENV['PLUGIN_DIR'] = $PROJECT_DIR.to_s
-
-def download_cordova_src(base_dir)
-    repo = GitRepository.new('https://github.com/apache/cordova-android.git', base_dir)
-    return repo.git_clone/'framework'/'src'
-end
+ENV['PLUGIN_DIR'] = $PLUGIN_DIR.to_s
 
 def write_build_gradle(cordova_srcdir)
     File.open('build.gradle', 'w') { |dst|
@@ -62,7 +57,7 @@ def write_build_gradle(cordova_srcdir)
 end
 
 def write_plugin_gradle
-    repo_dir = GitRepository.lineadapter_android($PLATFORM_DIR, '3.1.21').git_clone
+    repo_dir = GitRepository.lineadapter_android($PLUGIN_DIR, '3.1.21').git_clone
 
     gradle = PluginGradle.new($PLATFORM_DIR)
     gradle.jar_files = Pathname.glob(repo_dir/'*.jar')
@@ -70,7 +65,9 @@ def write_plugin_gradle
     gradle.write('plugin.gradle')
 end
 
-cordova_srcdir = download_cordova_src($PLATFORM_DIR)
+cordova_srcdir = GitRepository.new(
+    'https://github.com/apache/cordova-android.git', $PLUGIN_DIR
+).git_clone/'framework'/'src'
 write_build_gradle(cordova_srcdir)
 write_plugin_gradle
 
