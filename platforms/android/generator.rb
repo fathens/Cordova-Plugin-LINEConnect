@@ -62,7 +62,7 @@ cordova_srcdir = GitRepository.new(
 
 write_build_gradle(cordova_srcdir)
 
-repo_dir = GitRepository.lineadapter_android($PLUGIN_DIR, '3.1.21').git_clone
+repo_dir = GitRepository.lineadapter_android($PLATFORM_DIR, '3.1.21').git_clone
 PluginGradle.with_lineadapter($PLATFORM_DIR, repo_dir).write
 
 log "Generating project done"
