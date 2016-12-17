@@ -56,20 +56,14 @@ def write_build_gradle(cordova_srcdir)
     }
 end
 
-def write_plugin_gradle
-    repo_dir = GitRepository.lineadapter_android($PLUGIN_DIR, '3.1.21').git_clone
-
-    gradle = PluginGradle.new($PLATFORM_DIR)
-    gradle.jar_files = Pathname.glob(repo_dir/'*.jar')
-    gradle.jni_dir = repo_dir/'libs'
-    gradle.write
-end
-
 cordova_srcdir = GitRepository.new(
     'https://github.com/apache/cordova-android.git', $PLUGIN_DIR
 ).git_clone/'framework'/'src'
+
 write_build_gradle(cordova_srcdir)
-write_plugin_gradle
+
+repo_dir = GitRepository.lineadapter_android($PLUGIN_DIR, '3.1.21').git_clone
+PluginGradle.with_lineadapter($PLATFORM_DIR, repo_dir).write
 
 log "Generating project done"
 log "Open by AndroidStudio. Thank you."
