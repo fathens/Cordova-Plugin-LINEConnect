@@ -25,7 +25,7 @@ def write_build_gradle(cordova_srcdir)
                 mavenCentral()
             }
             dependencies {
-                classpath 'com.android.tools.build:gradle:1.+'
+                classpath 'com.android.tools.build:gradle:2.+'
                 classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.+"
             }
         }
