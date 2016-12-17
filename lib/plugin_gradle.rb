@@ -7,7 +7,9 @@ class PluginGradle
         @base_dir = base_dir
     end
 
-    def write(target_file)
+    def write
+        target_file = 'plugin.gradle'
+
         files_line = @jar_files.map { |x|
             "'#{mk_path(x)}'"
         }.join(', ')

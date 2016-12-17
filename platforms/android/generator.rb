@@ -62,7 +62,7 @@ def write_plugin_gradle
     gradle = PluginGradle.new($PLATFORM_DIR)
     gradle.jar_files = Pathname.glob(repo_dir/'*.jar')
     gradle.jni_dir = repo_dir/'libs'
-    gradle.write('plugin.gradle')
+    gradle.write
 end
 
 cordova_srcdir = GitRepository.new(
