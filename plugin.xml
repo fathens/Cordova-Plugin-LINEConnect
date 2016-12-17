@@ -18,6 +18,26 @@
     <platform name="android">
         <dependency id="org.fathens.cordova.plugin.lang.Kotlin" url="https://github.com/fathens/Cordova-Plugin-Kotlin.git" commit="master" />
 
+        <config-file target="AndroidManifest.xml" parent="application">
+            <meta-data android:name="jp.line.sdk.ChannelId" android:value="$CHANNEL_ID" />
+            <meta-data android:name="jp.line.sdk.AuthScheme" android:value="line.$CHANNEL_ID" />
+            <activity android:name="jp.line.android.sdk.activity.LineAuthCompleteActivity"
+                    android:configChanges="keyboard|orientation"
+                    android:exported="true"
+                    android:screenOrientation="sensor">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE" />
+                    <data android:scheme="line.$CHANNEL_ID" />
+                </intent-filter>
+            </activity>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+        </config-file>
+
         <source-file src="platforms/android/src/main/kotlin/LINEConnect.kt" target-dir="kotlin/org.fathens.cordova.plugin.lineconnect"/>
 
         <framework src="platforms/android/plugin.gradle" custom="true" type="gradleReference"/>
