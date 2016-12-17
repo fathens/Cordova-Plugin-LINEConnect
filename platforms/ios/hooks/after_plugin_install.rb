@@ -7,4 +7,4 @@ puts "Working with #{$0}"
 
 $PLUGIN_DIR = Pathname(ENV['CORDOVA_HOOK'] || $0).realpath.dirname.dirname.dirname.dirname
 
-GitRepository.clone_lineadapter($PLUGIN_DIR)
+GitRepository.lineadapter_ios($PLUGIN_DIR, '3.2.1').git_clone

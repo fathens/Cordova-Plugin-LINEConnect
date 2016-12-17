@@ -13,18 +13,11 @@ def log_header(msg)
 end
 
 $PLATFORM_DIR = Pathname($0).realpath.dirname
-$PROJECT_DIR = $PLATFORM_DIR.dirname.dirname
+$PLUGIN_DIR = $PLATFORM_DIR.dirname.dirname
 
-ENV['PLUGIN_DIR'] = $PROJECT_DIR.to_s
+ENV['PLUGIN_DIR'] = $PLUGIN_DIR.to_s
 
-def download_cordova_src(target_dir)
-    tmp_dir = $PLATFORM_DIR/'.tmp'
-    GitRepository.git_clone('https://github.com/apache/cordova-android.git', tmp_dir)
-    (tmp_dir/'framework'/'src').rename(target_dir)
-    FileUtils.rm_rf(tmp_dir)
-end
-
-def write_build_gradle
+def write_build_gradle(cordova_srcdir)
     File.open('build.gradle', 'w') { |dst|
         dst.puts <<~EOF
         buildscript {
@@ -32,7 +25,7 @@ def write_build_gradle
                 mavenCentral()
             }
             dependencies {
-                classpath 'com.android.tools.build:gradle:1.+'
+                classpath 'com.android.tools.build:gradle:2.+'
                 classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.+"
             }
         }
@@ -54,7 +47,7 @@ def write_build_gradle
             buildToolsVersion '25.0.2'
             sourceSets {
                 main.java {
-                    srcDirs += '.cordova'
+                    srcDirs += '#{cordova_srcdir.relative_path_from $PLATFORM_DIR}'
                     srcDirs += 'src/main/kotlin'
                 }
             }
@@ -63,18 +56,14 @@ def write_build_gradle
     }
 end
 
-def write_plugin_gradle
-    repo_dir = GitRepository.clone_lineadapter_android($PLATFORM_DIR/'.lib', '3.1.21')
+cordova_srcdir = GitRepository.new(
+    'https://github.com/apache/cordova-android.git', $PLUGIN_DIR
+).git_clone/'framework'/'src'
 
-    gradle = PluginGradle.new($PLATFORM_DIR)
-    gradle.jar_files = Pathname.glob(repo_dir/'*.jar')
-    gradle.jni_dir = repo_dir/'libs'
-    gradle.write('plugin.gradle')
-end
+write_build_gradle(cordova_srcdir)
 
-write_build_gradle
-write_plugin_gradle
-download_cordova_src($PLATFORM_DIR/'.cordova')
+repo_dir = GitRepository.lineadapter_android($PLATFORM_DIR, '3.1.21').git_clone
+PluginGradle.with_lineadapter($PLATFORM_DIR, repo_dir).write
 
 log "Generating project done"
 log "Open by AndroidStudio. Thank you."

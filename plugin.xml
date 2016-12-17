@@ -74,7 +74,7 @@
         </config-file>
 
         <podfile ios_version="9.0" swift_version="3.0">
-            <pod name="LineAdapter" path="${PLUGIN_DIR}/.tmp/LineAdapter-iOS">
+            <pod name="LineAdapter" path="${PLUGIN_DIR}/.repo/lineadapter_ios">
                 <bridging-header import="LineAdapter/LineSDK.h" />
             </pod>
         </podfile>
