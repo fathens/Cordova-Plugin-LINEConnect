@@ -12,7 +12,7 @@ class LINEConnect: CDVPlugin {
     
     // MARK: - Plugin Commands
 
-    func loginWithLine(_ command: CDVInvokedUrlCommand) {
+    func login(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             if self.adapter.isAuthorized {
                 self.finish_error("Already authorized.")
@@ -27,22 +27,6 @@ class LINEConnect: CDVPlugin {
         }
     }
     
-    func loginInApp(_ command: CDVInvokedUrlCommand) {
-        fork(command) {
-            self.currentCommand = command
-            if self.adapter.isAuthorized {
-                self.finish_error("Already authorized.")
-            } else {
-                let vc = LineAdapterWebViewController(adapter: self.adapter, with: LineAdapterWebViewOrientation.all)
-                vc.navigationItem.leftBarButtonItem = LineAdapterNavigationController.barButtonItem(withTitle: "Cancel", target: self, action: #selector(LINEConnect.cancel(_:)))
-                
-                let nc = LineAdapterNavigationController(rootViewController: vc)
-                self.viewController.present(nc, animated: true, completion: nil)
-            }
-            
-        }
-    }
-    
     func logout(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             log("Logout now!")
@@ -52,19 +36,31 @@ class LINEConnect: CDVPlugin {
     
     func getName(_ command: CDVInvokedUrlCommand) {
         fork(command) {
-            if self.adapter.isAuthorized {
-                self.adapter.getLineApiClient().getMyProfile {[unowned self] (profile, error) -> Void in
-                    if let error = error {
-                        self.finish_error(error.localizedDescription)
+            self.getProfile("displayName")
+        }
+    }
+    
+    func getId(_ command: CDVInvokedUrlCommand) {
+        fork(command) {
+            self.getProfile("mid")
+        }
+    }
+    
+    private func getProfile(_ key: String) {
+        if self.adapter.isAuthorized {
+            self.adapter.getLineApiClient().getMyProfile { (profile, error) -> Void in
+                if let error = error {
+                    self.finish_error(error.localizedDescription)
+                } else {
+                    if let p = profile, let value = p[key] as? String {
+                        self.finish_ok(value)
                     } else {
-                        if let displayName = profile?["displayName"] as? String {
-                            self.finish_ok(displayName)
-                        } else {
-                            self.finish_error("Empty Name")
-                        }
+                        self.finish_error("Empty profile")
                     }
                 }
             }
+        } else {
+            self.finish_error("Not login")
         }
     }
     
@@ -104,10 +100,10 @@ class LINEConnect: CDVPlugin {
                 switch command.methodName {
                 case "logout" where !adapter.isAuthorized:
                     finish_ok()
-                case let name where name.hasPrefix("login") && adapter.isAuthorized:
-                    finish_ok(adapter.getLineApiClient().accessToken)
+                case "login" where adapter.isAuthorized:
+                    getProfile("mid")
                 default:
-                    self.finish_error("Login status: \(adapter.isAuthorized)")
+                    finish_error("Login status: \(adapter.isAuthorized)")
                 }
             }
         }

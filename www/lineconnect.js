@@ -2,7 +2,7 @@ var cordova = require("cordova/exec");
 
 var pluginName = "LINEConnectPlugin"
 
-var names = [ "connect", "disconnect" ];
+var names = [ "login", "logout", "getId", "getName" ];
 
 var obj = {};
 

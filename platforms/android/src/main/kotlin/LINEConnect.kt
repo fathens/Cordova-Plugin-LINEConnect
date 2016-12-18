@@ -48,7 +48,7 @@ public class LINEConnect : CordovaPlugin() {
     public fun login(args: JSONArray) {
         LineSdkContextManager.getSdkContext().authManager.login(cordova.activity).addFutureListener { future ->
             when (future.progress) {
-                LineLoginFuture.ProgressOfLogin.SUCCESS -> context?.success()
+                LineLoginFuture.ProgressOfLogin.SUCCESS -> getId(args)
                 LineLoginFuture.ProgressOfLogin.CANCELED -> context?.error("Login canceled.")
                 else -> context?.error("Error: ${future.cause}")
             }
