@@ -36,19 +36,31 @@ class LINEConnect: CDVPlugin {
     
     func getName(_ command: CDVInvokedUrlCommand) {
         fork(command) {
-            if self.adapter.isAuthorized {
-                self.adapter.getLineApiClient().getMyProfile {[unowned self] (profile, error) -> Void in
-                    if let error = error {
-                        self.finish_error(error.localizedDescription)
+            self.getProfile("displayName")
+        }
+    }
+    
+    func getId(_ command: CDVInvokedUrlCommand) {
+        fork(command) {
+            self.getProfile("mid")
+        }
+    }
+    
+    private func getProfile(_ key: String) {
+        if self.adapter.isAuthorized {
+            self.adapter.getLineApiClient().getMyProfile { (profile, error) -> Void in
+                if let error = error {
+                    self.finish_error(error.localizedDescription)
+                } else {
+                    if let p = profile, let value = p[key] as? String {
+                        self.finish_ok(value)
                     } else {
-                        if let displayName = profile?["displayName"] as? String {
-                            self.finish_ok(displayName)
-                        } else {
-                            self.finish_error("Empty Name")
-                        }
+                        self.finish_error("Empty profile")
                     }
                 }
             }
+        } else {
+            self.finish_error("Not login")
         }
     }
     
