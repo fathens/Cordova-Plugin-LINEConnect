@@ -12,7 +12,7 @@ class LINEConnect: CDVPlugin {
     
     // MARK: - Plugin Commands
 
-    func loginWithLine(_ command: CDVInvokedUrlCommand) {
+    func login(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             if self.adapter.isAuthorized {
                 self.finish_error("Already authorized.")
@@ -22,22 +22,6 @@ class LINEConnect: CDVPlugin {
                 } else {
                     self.finish_error("LINE is not installed.")
                 }
-            }
-            
-        }
-    }
-    
-    func loginInApp(_ command: CDVInvokedUrlCommand) {
-        fork(command) {
-            self.currentCommand = command
-            if self.adapter.isAuthorized {
-                self.finish_error("Already authorized.")
-            } else {
-                let vc = LineAdapterWebViewController(adapter: self.adapter, with: LineAdapterWebViewOrientation.all)
-                vc.navigationItem.leftBarButtonItem = LineAdapterNavigationController.barButtonItem(withTitle: "Cancel", target: self, action: #selector(LINEConnect.cancel(_:)))
-                
-                let nc = LineAdapterNavigationController(rootViewController: vc)
-                self.viewController.present(nc, animated: true, completion: nil)
             }
             
         }
