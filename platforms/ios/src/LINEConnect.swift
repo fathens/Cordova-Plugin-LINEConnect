@@ -100,10 +100,10 @@ class LINEConnect: CDVPlugin {
                 switch command.methodName {
                 case "logout" where !adapter.isAuthorized:
                     finish_ok()
-                case let name where name.hasPrefix("login") && adapter.isAuthorized:
-                    finish_ok(adapter.getLineApiClient().accessToken)
+                case "login" where adapter.isAuthorized:
+                    getProfile("mid")
                 default:
-                    self.finish_error("Login status: \(adapter.isAuthorized)")
+                    finish_error("Login status: \(adapter.isAuthorized)")
                 }
             }
         }
