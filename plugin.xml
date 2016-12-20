@@ -41,6 +41,8 @@
         <source-file src="platforms/android/src/main/kotlin/LINEConnect.kt" target-dir="kotlin/org.fathens.cordova.plugin.lineconnect"/>
 
         <framework src="platforms/android/plugin.gradle" custom="true" type="gradleReference"/>
+
+        <hook type="before_plugin_install" src="platforms/android/hooks/before_plugin_install.rb"/>
     </platform>
 
     <platform name="ios">
@@ -80,5 +82,7 @@
         </podfile>
 
         <source-file src="platforms/ios/src/LINEConnect.swift"/>
+
+        <hook type="after_plugin_install" src="platforms/ios/hooks/after_plugin_install.rb"/>
     </platform>
 </plugin>
