@@ -1,7 +1,20 @@
+#!/bin/bash
+
+cat > Gemfile <<EOF
+source 'https://rubygems.org'
+
+gem "cocoapods"
+gem "fetch_local_lib", :git => "https://github.com/fathens/fetch_local_lib.git"
+gem "cordova_plugin_kotlin", :git => "https://github.com/fathens/Cordova-Plugin-Kotlin.git", :branch => "feature/gemlib"
+EOF
+
+bundle install
+
+bundle exec ruby <<EOF
 require 'pathname'
 require 'fileutils'
-require_relative '../../lib/git_repository'
-require_relative '../../lib/plugin_gradle'
+require 'fetch_local_lib'
+require 'cordova_plugin_kotlin'
 
 def log(msg)
     puts msg
@@ -12,10 +25,10 @@ def log_header(msg)
     log "#### #{msg}"
 end
 
-$PLATFORM_DIR = Pathname($0).realpath.dirname
-$PLUGIN_DIR = $PLATFORM_DIR.dirname.dirname
+PLATFORM_DIR = Pathname('$0').realpath.dirname
+PLUGIN_DIR = PLATFORM_DIR.dirname.dirname
 
-ENV['PLUGIN_DIR'] = $PLUGIN_DIR.to_s
+ENV['PLUGIN_DIR'] = PLUGIN_DIR.to_s
 
 def write_build_gradle(cordova_srcdir)
     File.open('build.gradle', 'w') { |dst|
@@ -47,7 +60,7 @@ def write_build_gradle(cordova_srcdir)
             buildToolsVersion '25.0.2'
             sourceSets {
                 main.java {
-                    srcDirs += '#{cordova_srcdir.relative_path_from $PLATFORM_DIR}'
+                    srcDirs += '#{cordova_srcdir.relative_path_from PLATFORM_DIR}'
                     srcDirs += 'src/main/kotlin'
                 }
             }
@@ -56,14 +69,13 @@ def write_build_gradle(cordova_srcdir)
     }
 end
 
-cordova_srcdir = GitRepository.new(
-    'https://github.com/apache/cordova-android.git', $PLUGIN_DIR
-).git_clone/'framework'/'src'
+cordova_srcdir = FetchLocalLib::Repo.github(PLUGIN_DIR, 'apache/cordova-android').git_clone/'framework'/'src'
 
 write_build_gradle(cordova_srcdir)
 
-repo_dir = GitRepository.lineadapter_android($PLATFORM_DIR, '3.1.21').git_clone
-PluginGradle.with_lineadapter($PLATFORM_DIR, repo_dir).write
+repo_dir = FetchLocalLib::Repo.bitbucket(PLATFORM_DIR, "lineadapter_android", tag: "version/3.1.21").git_clone
+PluginGradle.with_lineadapter(PLATFORM_DIR, repo_dir).write
 
 log "Generating project done"
 log "Open by AndroidStudio. Thank you."
+EOF
