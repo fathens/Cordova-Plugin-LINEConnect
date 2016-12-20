@@ -1,6 +1,5 @@
 /local.properties
 /build.gradle
-/plugin.gradle
 /build/
 /gradle*
 *.iml
