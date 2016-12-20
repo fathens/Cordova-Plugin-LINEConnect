@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cat > Gemfile <<EOF
 source 'https://rubygems.org'
 
