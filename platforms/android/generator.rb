@@ -4,7 +4,7 @@ cat > Gemfile <<EOF
 source 'https://rubygems.org'
 
 gem "fetch_local_lib", :git => "https://github.com/fathens/fetch_local_lib.git"
-gem "cordova_plugin_kotlin", :git => "https://github.com/fathens/Cordova-Plugin-Kotlin.git", :branch => "feature/gemlib"
+gem "cordova_plugin_kotlin", :git => "https://github.com/fathens/Cordova-Plugin-Kotlin.git"
 EOF
 
 bundle install && bundle update
