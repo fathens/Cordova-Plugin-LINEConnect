@@ -12,7 +12,7 @@ bundle install && bundle update
 cat > .generator.rb <<EOF
 require 'pathname'
 require 'cordova_plugin_kotlin'
-require_relative 'hooks/after_plugin_install'
+require_relative 'hooks/before_plugin_install'
 
 PLATFORM_DIR = Pathname('$0').realpath.dirname
 PLUGIN_DIR = PLATFORM_DIR.dirname.dirname
