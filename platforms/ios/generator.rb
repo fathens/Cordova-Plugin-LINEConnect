@@ -8,7 +8,7 @@ gem "fetch_local_lib", :git => "https://github.com/fathens/fetch_local_lib.git"
 gem "cordova_plugin_swift", :git => "https://github.com/fathens/Cordova-Plugin-Swift.git", :branch => "feature/gemlib"
 EOF
 
-bundle install
+bundle install && bundle update
 
 bundle exec ruby <<EOF
 require 'pathname'
