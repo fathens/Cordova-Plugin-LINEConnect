@@ -42,7 +42,7 @@
 
         <framework src="platforms/android/plugin.gradle" custom="true" type="gradleReference"/>
 
-        <hook type="after_plugin_install" src="platforms/android/hooks/after_plugin_install.rb"/>
+        <hook type="before_plugin_install" src="platforms/android/hooks/before_plugin_install.rb"/>
     </platform>
 
     <platform name="ios">
