@@ -74,7 +74,10 @@ cordova_srcdir = FetchLocalLib::Repo.github(PLUGIN_DIR, 'apache/cordova-android'
 write_build_gradle(cordova_srcdir)
 
 repo_dir = FetchLocalLib::Repo.bitbucket(PLATFORM_DIR, "lineadapter_android", tag: "version/3.1.21").git_clone
-PluginGradle.with_lineadapter(PLATFORM_DIR, repo_dir).write
+gradle = PluginGradle.new
+gradle.jar_files.concat Pathname.glob(repo_dir/'*.jar')
+gradle.jni_dirs.push repo_dir/'libs'
+gradle.write PLATFORM_DIR/'plugin.gradle'
 
 log "Generating project done"
 log "Open by AndroidStudio. Thank you."
