@@ -17,9 +17,12 @@ def rewrite_gradle(fileSrc)
     File.rename(fileDst, fileSrc)
 end
 
-$PLUGIN_PLATFORM_DIR = Pathname(ENV['CORDOVA_HOOK'] || $0).realpath.dirname.dirname
-$PLUGIN_DIR = $PLUGIN_PLATFORM_DIR.dirname.dirname
-ENV['PLUGIN_DIR'] = $PLUGIN_DIR.to_s
+def fetch_lineadapter(plugin_dir)
+    ENV['PLUGIN_DIR'] = plugin_dir.to_s
+    FetchLocalLib::Repo.bitbucket(plugin_dir, "lineadapter_android", tag: "version/3.1.21").git_clone
+    rewrite_gradle plugin_dir/'platforms'/'android'/'plugin.gradle'
+end
 
-FetchLocalLib::Repo.bitbucket($PLUGIN_DIR, "lineadapter_android", tag: "version/3.1.21").git_clone
-rewrite_gradle $PLUGIN_PLATFORM_DIR/'plugin.gradle'
+if $0 == __FILE__
+    fetch_lineadapter Pathname(ENV['CORDOVA_HOOK'] || $0).realpath.dirname.dirname.dirname.dirname
+end
