@@ -21,9 +21,7 @@ PLUGIN_DIR = PLATFORM_DIR.dirname.dirname
 
 fetch_lineadapter PLUGIN_DIR
 
-cordova_srcdir = FetchLocalLib::Repo.github(PLUGIN_DIR, 'apache/cordova-android').git_clone/'framework'/'src'
-
-write_build_gradle(PLATFORM_DIR/'build.gradle', cordova_srcdir)
+write_build_gradle(PLATFORM_DIR/'build.gradle')
 
 log "Generating project done"
 log "Open by AndroidStudio. Thank you."
