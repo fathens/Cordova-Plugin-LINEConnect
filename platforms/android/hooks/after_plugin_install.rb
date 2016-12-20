@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'pathname'
-require_relative '../lib/git_repository'
-require_relative '../lib/plugin_gradle'
+require 'fetch_local_lib'
 
 puts "Working with #{$0}"
 
-$PLUGIN_PLATFORM_DIR = Pathname(ENV['CORDOVA_HOOK'] || $0).realpath.dirname.dirname
+$PLUGIN_DIR = Pathname(ENV['CORDOVA_HOOK'] || $0).realpath.dirname.dirname.dirname.dirname
 
-repo_dir = GitRepository.lineadapter_android($PLUGIN_PLATFORM_DIR, '3.1.21').git_clone
-PluginGradle.with_lineadapter($PLUGIN_PLATFORM_DIR, repo_dir).write
+FetchLocalLib::Repo.bitbucket($PLUGIN_DIR, "lineadapter_android1", tag: "version/3.1.21").git_clone
