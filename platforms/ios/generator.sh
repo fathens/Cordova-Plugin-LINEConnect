@@ -23,13 +23,13 @@ ENV['PLUGIN_DIR'] = PLUGIN_DIR.to_s
 plugin_xml = REXML::Document.new(File.open(PLUGIN_DIR/'plugin.xml'))
 
 podfile = Podfile.new(element: plugin_xml.get_elements('//platform[@name="ios"]/podfile').first)
+podfile.pods.unshift Pod.new(name: 'Cordova')
 podfile.swift_version ||= '3.0'
 podfile.ios_version ||= '10.0'
 
 bridge_file = PLATFORM_DIR/".Bridging-Header.h"
 File.open(bridge_file, 'w') { |dst|
-    lines = podfile.pods.map {|p| p.bridging_headers }.flatten
-    dst.puts lines.unshift(BridgingHeader.new(import: 'Cordova/CDV.h'))
+    dst.puts podfile.pods.map {|p| p.bridging_headers }.flatten
 }
 
 proj = XcodeProject.new
