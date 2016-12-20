@@ -3,18 +3,17 @@
 require 'pathname'
 require 'fetch_local_lib'
 
-def rewrite_gradle(fileSrc)
-    fileDst = "#{fileSrc}.tmp"
-        open(fileSrc, 'r') { |src|
-            open(fileDst, 'w') { |dst|
-                src.each_line { |line|
-                    dst.puts line.gsub(/\$\{(.+?)\}/) {
-                        ENV[$1] || $1
-                    }
+def rewrite_gradle(file_dst)
+    file_src = "#{file_dst}.template"
+    open(file_src, 'r') { |src|
+        open(file_dst, 'w') { |dst|
+            src.each_line { |line|
+                dst.puts line.gsub(/\$\{(.+?)\}/) {
+                    ENV[$1] || $1
                 }
             }
         }
-    File.rename(fileDst, fileSrc)
+    }
 end
 
 def fetch_lineadapter(plugin_dir)
