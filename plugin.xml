@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.fathens.cordova.plugin.lineconnect" version="0.1.0" xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>LINEConnect</name>
+    <description>Cordova Plugin for LINE Connection</description>
+    <license>MIT</license>
+
+    <engines>
+        <engine name="cordova-android" version=">=4.1.0" />
+        <engine name="cordova-ios" version=">=3.9.0" />
+    </engines>
+
+    <js-module name="LINEConnectPlugin" src="www/lineconnect.js">
+        <clobbers target="plugin.LINEConnect"/>
+    </js-module>
+
+    <preference name="CHANNEL_ID" />
+
+    <platform name="android">
+        <dependency id="org.fathens.cordova.plugin.lang.Kotlin" url="https://github.com/fathens/Cordova-Plugin-Kotlin.git" commit="master" />
+
+        <config-file target="AndroidManifest.xml" parent="application">
+            <meta-data android:name="jp.line.sdk.ChannelId" android:value="$CHANNEL_ID" />
+            <meta-data android:name="jp.line.sdk.AuthScheme" android:value="line.$CHANNEL_ID" />
+            <activity android:name="jp.line.android.sdk.activity.LineAuthCompleteActivity"
+                    android:configChanges="keyboard|orientation"
+                    android:exported="true"
+                    android:screenOrientation="sensor">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE" />
+                    <data android:scheme="line.$CHANNEL_ID" />
+                </intent-filter>
+            </activity>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+        </config-file>
+
+        <source-file src="platforms/android/src/main/kotlin/LINEConnect.kt" target-dir="kotlin/org.fathens.cordova.plugin.lineconnect"/>
+
+        <framework src="platforms/android/plugin.gradle" custom="true" type="gradleReference"/>
+
+        <hook type="before_plugin_install" src="platforms/android/hooks/before_plugin_install.rb"/>
+    </platform>
+
+    <platform name="ios">
+        <dependency id="org.fathens.cordova.plugin.lang.Swift" url="https://github.com/fathens/Cordova-Plugin-Swift.git" commit="master" />
+
+        <preference name="BUNDLE_ID" />
+
+        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+            <array>
+                <dict>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>line3rdp.$BUNDLE_ID</string>
+                    </array>
+                </dict>
+            </array>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="LineAdapterConfig">
+            <dict>
+                <key>ChannelId</key>
+                <string>$CHANNEL_ID</string>
+            </dict>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
+            <array>
+                <string>lineauth</string>
+                <string>line3rdp.$BUNDLE_ID</string>
+            </array>
+        </config-file>
+
+        <podfile ios_version="9.0" swift_version="3.0">
+            <pod name="LineAdapter" path="${PLUGIN_DIR}/.repo/lineadapter_ios">
+                <bridging-header import="LineAdapter/LineSDK.h" />
+            </pod>
+        </podfile>
+
+        <source-file src="platforms/ios/src/LINEConnect.swift"/>
+
+        <hook type="after_plugin_install" src="platforms/ios/hooks/after_plugin_install.rb"/>
+    </platform>
+</plugin>

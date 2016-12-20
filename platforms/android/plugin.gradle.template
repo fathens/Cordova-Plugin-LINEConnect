@@ -1,0 +1,10 @@
+dependencies {
+    compile files('${PLUGIN_DIR}/.repo/lineadapter_android/line-android-sdk-3.1.21.jar')
+}
+android {
+    sourceSets {
+        main.jniLibs {
+            srcDirs += '${PLUGIN_DIR}/.repo/lineadapter_android/libs'
+        }
+    }
+}
