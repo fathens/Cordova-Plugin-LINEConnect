@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'pathname'
-require_relative '../lib/git_repository'
+require 'fetch_local_lib'
 
 puts "Working with #{$0}"
 
 $PLUGIN_DIR = Pathname(ENV['CORDOVA_HOOK'] || $0).realpath.dirname.dirname.dirname.dirname
 
-GitRepository.lineadapter_ios($PLUGIN_DIR, '3.2.1').git_clone
+FetchLocalLib::Repo.bitbucket($PLUGIN_DIR, "lineadapter_ios", tag: "version/3.2.1").git_clone
