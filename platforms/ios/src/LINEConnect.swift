@@ -1,7 +1,7 @@
 import Foundation
 import Cordova
 
-func log(_ msg: String) {
+fileprivate func log(_ msg: String) {
     print(msg)
 }
 
@@ -9,7 +9,7 @@ func log(_ msg: String) {
 class LINEConnect: CDVPlugin {
     lazy private var adapter: LineAdapter = LineAdapter.default()
     private var currentCommand: CDVInvokedUrlCommand?
-    
+
     // MARK: - Plugin Commands
 
     func login(_ command: CDVInvokedUrlCommand) {
@@ -23,29 +23,29 @@ class LINEConnect: CDVPlugin {
                     self.finish_error("LINE is not installed.")
                 }
             }
-            
+
         }
     }
-    
+
     func logout(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             log("Logout now!")
             self.adapter.unauthorize()
         }
     }
-    
+
     func getName(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             self.getProfile("displayName")
         }
     }
-    
+
     func getId(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             self.getProfile("mid")
         }
     }
-    
+
     private func getProfile(_ key: String) {
         if self.adapter.isAuthorized {
             self.adapter.getLineApiClient().getMyProfile { (profile, error) -> Void in
@@ -63,7 +63,7 @@ class LINEConnect: CDVPlugin {
             self.finish_error("Not login")
         }
     }
-    
+
     // MARK: - Override Methods
 
     override func handleOpenURL(_ notification: Notification) {
@@ -78,9 +78,9 @@ class LINEConnect: CDVPlugin {
         observe(.UIApplicationDidFinishLaunching, #selector(LINEConnect.finishLaunching(_:)))
         observe(.LineAdapterAuthorizationDidChange, #selector(LINEConnect.authorizationDidChange(_:)))
     }
-    
+
     // MARK: - Event Listeners
-    
+
     func cancel(_ sender: AnyObject) {
         finish_error("Canceled.")
     }
@@ -89,10 +89,10 @@ class LINEConnect: CDVPlugin {
         let options = (notification as NSNotification).userInfo != nil ? (notification as NSNotification).userInfo : [:]
         LineAdapter.handleLaunchOptions(options)
     }
-    
+
     func authorizationDidChange(_ notification: Notification) {
         let adapter = notification.object as! LineAdapter
-        
+
         if let command = currentCommand {
             if let error = notification.userInfo?["error"] as? NSError {
                 finish_error(error.localizedDescription)
@@ -108,9 +108,9 @@ class LINEConnect: CDVPlugin {
             }
         }
     }
-    
+
     // MARK: - Private Utillities
-    
+
     private func fork(_ command: CDVInvokedUrlCommand, _ proc: @escaping () -> Void) {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async(execute: {
             self.currentCommand = command
@@ -126,7 +126,7 @@ class LINEConnect: CDVPlugin {
             commandDelegate!.send(CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: msg), callbackId: command.callbackId)
         }
     }
-    
+
     private func finish_ok(_ result: Any? = nil) {
         if let command = self.currentCommand {
             log("Command Result: \(result)")
