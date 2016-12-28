@@ -1,7 +1,7 @@
 import Foundation
 import Cordova
 
-func log(_ msg: String) {
+fileprivate func log(_ msg: String) {
     print(msg)
 }
 
